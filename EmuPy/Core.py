@@ -20,7 +20,7 @@ class clock:
         self.cycle = self.cycle + 1
         if self.cycle == 4770000:
             self.cycle = 0
-            print "Second"
+            # print "Second"
             
     def run(self):
         self.thistime = time.clock() #Use time.time() on linux
