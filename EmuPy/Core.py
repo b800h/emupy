@@ -32,5 +32,3 @@ print "EmuPy running. Press CTRL-C to end emulation."
 
 while 1:
     clock1.run
-
-
