@@ -6,7 +6,14 @@ Created on 10 Aug 2014
 
 import time
 
+# Config Items
+
 VERSION = 0.1
+
+# Global System Considerations
+
+AddressBus = [0,0,0,0,0,0,0,0];
+DataBus = [0,0,0,0,0,0,0,0];
 
 class clock:
     def __init__ (self, speed):
@@ -16,11 +23,10 @@ class clock:
         self.normalinterval = 1 / (speed * 1000000)
         print "Clock running at " + str(self.speed) + "MHz"
         print "Internal clock interval: " + str(self.normalinterval) + " seconds."
+        self.clockwave = True
     def tick (self):
         self.cycle = self.cycle + 1
-        if self.cycle == 4770000:
-            self.cycle = 0
-            # print "Second"
+        self.clockwave = not self.clockwave
             
     def run(self):
         self.thistime = time.clock() #Use time.time() on linux
@@ -40,4 +46,7 @@ print "EmuPy running. Press CTRL-C to end emulation."
 breakflag = 0
 
 while breakflag == 0:
+    currentwave = clock1.clockwave
     clock1.run()
+    if currentwave <> clock1.clockwave:
+        print "Up"
