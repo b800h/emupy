@@ -1,0 +1,16 @@
+* Object for each bus (bus.py)
+* Object for each chip (chips.py) / clock (clock.py)
+* Challenge is how to associate chip outs with buses.
+
+	* Interfaces defined in config
+	* For each interface defined in config, map chip out to bus
+
+*Pre-Program Flow:
+
+	Read config file, create buses (as dictionary!)
+	Read config file, create chips as objects by instantiating classes, name outputs with correct dictionary references
+
+*Program flow:
+
+	Run Clock (Clock refers by dict to Clock Bus, sets changes)
+	Run Next Chip (Chip has dict references to address bus etc.)
