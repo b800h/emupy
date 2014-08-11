@@ -5,6 +5,8 @@
 	* Interfaces defined in config
 	* For each interface defined in config, map chip out to bus
 
+	* Each chip should have its own thread, later reimplement using multiprocessing module to use multiple cores.
+
 *Pre-Program Flow:
 
 	Read config file, create buses (as dictionary!)
@@ -12,5 +14,5 @@
 
 *Program flow:
 
-	Run Clock (Clock refers by dict to Clock Bus, sets changes)
-	Run Next Chip (Chip has dict references to address bus etc.)
+	Start Clock (Clock refers by dict to Clock Bus, sets changes)
+	Start Next Chip (Chip has dict references to address bus etc.)
