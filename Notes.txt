@@ -17,7 +17,6 @@
 	Start Clock (Clock refers by dict to Clock Bus, sets changes)
 	Start Next Chip (Chip has dict references to address bus etc.)
 
-
 * Testing: Implement simple 6502 system:
 
 	Test using progs such as: http://6502.org/source/general/address_test.html
