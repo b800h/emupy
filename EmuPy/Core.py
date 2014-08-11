@@ -20,7 +20,7 @@ class clock:
         self.lasttime = time.clock() #Use time.time() on Linux
         self.cycle = 0
         self.speed = speed
-        self.normalinterval = 1 / (speed * 1000000)
+        self.normalinterval = 1 / (speed * 100000)
         print "Clock running at " + str(self.speed) + "MHz"
         print "Internal clock interval: " + str(self.normalinterval) + " seconds."
         self.clockwave = True
