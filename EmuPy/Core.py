@@ -5,6 +5,8 @@ Created on 10 Aug 2014
 '''
 
 import time
+import components.chip_4164
+import components.chip_6502
 
 # Config Items
 
