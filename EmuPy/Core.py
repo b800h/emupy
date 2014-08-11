@@ -10,11 +10,13 @@ import time
 
 VERSION = 0.1
 
-# Global System Considerations
+# Global System Considerations - Farm this out to System Config Python File
 
 Clock = [0];
 AddressBus = {'A0': 0, 'A1': 0, 'A2': 0, 'A3': 0, 'A4': 0, 'A5': 0, 'A6': 0, 'A7': 0};
 DataBus = {'D0': 0, 'D1': 0, 'D2': 0, 'D3': 0, 'D4': 0, 'D5': 0, 'D6': 0, 'D7': 0};
+
+# Clock object - Add this to clock.py
 
 class clock:
     def __init__ (self, speed):
