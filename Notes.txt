@@ -7,16 +7,17 @@
 
 	* Each chip should have its own thread, later reimplement using multiprocessing module to use multiple cores.
 
-*Pre-Program Flow:
+* Pre-Program Flow:
 
 	Read config file, create buses (as dictionary!)
 	Read config file, create chips as objects by instantiating classes, name outputs with correct dictionary references
 
-*Program flow:
+* Program flow:
 
 	Start Clock (Clock refers by dict to Clock Bus, sets changes)
 	Start Next Chip (Chip has dict references to address bus etc.)
 
 
-*Testing: Implement simple 6502 system
+* Testing: Implement simple 6502 system:
+
 	Test using progs such as: http://6502.org/source/general/address_test.html
