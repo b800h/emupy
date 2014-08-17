@@ -6,6 +6,25 @@ Created on 10 Aug 2014
 
 import time
 import components.chip_4164
+import pyglet
+from mock import mock
+
+window = pyglet.window.Window()
+
+label = pyglet.text.Label('Hello, world',
+                          font_name='Times New Roman',
+                          font_size=36,
+                          x=window.width//2, y=window.height//2,
+                          anchor_x='center', anchor_y='center')
+
+
+@window.event
+def on_draw():
+    window.clear()
+    label.draw()
+    pyglet.graphics.draw(2, pyglet.gl.GL_POINTS,('v2i', (10, 15, 30, 35)))
+
+# pyglet.app.run() - Need to override the idle method to run system 
 
 # Config Items
 
@@ -13,7 +32,7 @@ VERSION = 0.1
 
 # Global System Considerations - Farm this out to System Config Python File
 
-bus = {
+global bus = {
        'A0': 0, 'A1': 0, 'A2': 0, 'A3': 0, 'A4': 0, 'A5': 0, 'A6': 0, 'A7': 0,
        'A8': 0, 'A9': 0, 'A10': 0, 'A11': 0, 'A12': 0, 'A13': 0, 'A14': 0, 'A15': 0,
        'D0': 0, 'D1': 0, 'D2': 0, 'D3': 0, 'D4': 0, 'D5': 0, 'D6': 0, 'D7': 0,
