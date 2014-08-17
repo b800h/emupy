@@ -10,11 +10,18 @@ Created on 11 Aug 2014
 
 '''
 
-class chip_7164:
+import threading
+
+class chip_7164(threading.Thread):
     
-    def __init__(self, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, 
+    def __init__(self, threadID, name, counter, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, 
                 io0, io1, io2, io3, io4, io5, io6, io7,
                 not_we, not_oe, not_cs1, not_cs2):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.name = name
+        self.counter = counter
+        print "Initialising " + self.name
         self.a0 = a0
         self.a1 = a1
         self.a2 = a2
@@ -48,15 +55,18 @@ class chip_7164:
         
         print bus[self.a1]
     
-    def run_chip(self):
+    def run(self):
         
         from emupy.components.bus_unit import bus
-        
+        #import time
+        print "Starting " + self.name
         self.current_not_oe = 1
         self.current_not_we = 1
         while 1:
-            if bus[self.not_oe] == 0 and self.current_not_we == 1:
-                self.current_not_we = 1
+            #time.sleep(self.counter)
+            print self.name + " running"
+            if bus[self.not_oe] == 0 and self.current_not_oe == 1:
+                self.current_not_oe = 0
                 address =   int(bus[self.a0]) + \
                             int(2*bus[self.a1]) + \
                             int(4*bus[self.a2]) + \
@@ -70,4 +80,4 @@ class chip_7164:
                             int(1024*bus[self.a10]) + \
                             int(2048*bus[self.a11]) + \
                             int(4096*bus[self.a12])
-                 
+                print "Memory read at address " + hex(address)
