@@ -11,6 +11,7 @@ Created on 11 Aug 2014
 '''
 
 class chip_7164:
+    
     def __init__(self, a0, a1, a2, a3, a4, a5, a6, a7, a8, a9, a10, a11, a12, 
                 io0, io1, io2, io3, io4, io5, io6, io7,
                 not_we, not_oe, not_cs1, not_cs2):
@@ -40,8 +41,11 @@ class chip_7164:
         self.not_cs1 = not_cs1
         self.not_cs2 = not_cs2
         self.memory = [0] * 8192 #8192 Bytes of Memory
+    
     def run_chip(self):
-        global bus
+        
+        from emupy.components.bus_unit import bus
+        
         self.current_not_oe = 1
         self.current_not_we = 1
         while 1:
