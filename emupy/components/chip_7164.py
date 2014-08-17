@@ -42,6 +42,12 @@ class chip_7164:
         self.not_cs2 = not_cs2
         self.memory = [0] * 8192 #8192 Bytes of Memory
     
+    def do_a1(self):
+        
+        from emupy.components.bus_unit import bus
+        
+        print bus[self.a1]
+    
     def run_chip(self):
         
         from emupy.components.bus_unit import bus
@@ -51,17 +57,17 @@ class chip_7164:
         while 1:
             if bus[self.not_oe] == 0 and self.current_not_we == 1:
                 self.current_not_we = 1
-                address =   bus[self.a0] + \
-                            2*bus[self.a1] + \
-                            4*bus[self.a2] + \
-                            8*bus[self.a3] + \
-                            16*bus[self.a4] + \
-                            32*bus[self.a5] + \
-                            64*bus[self.a6] + \
-                            128*bus[self.a7] + \
-                            256*bus[self.a8] + \
-                            512*bus[self.a9] + \
-                            1024*bus[self.a10] + \
-                            2048*bus[self.a11] + \
-                            4096*bus[self.a12]
+                address =   int(bus[self.a0]) + \
+                            int(2*bus[self.a1]) + \
+                            int(4*bus[self.a2]) + \
+                            int(8*bus[self.a3]) + \
+                            int(16*bus[self.a4]) + \
+                            int(32*bus[self.a5]) + \
+                            int(64*bus[self.a6]) + \
+                            int(128*bus[self.a7]) + \
+                            int(256*bus[self.a8]) + \
+                            int(512*bus[self.a9]) + \
+                            int(1024*bus[self.a10]) + \
+                            int(2048*bus[self.a11]) + \
+                            int(4096*bus[self.a12])
                  
