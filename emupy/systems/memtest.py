@@ -23,5 +23,11 @@ time.sleep(4)
 bus["NOT_OE"] = 0
 time.sleep(4)
 bus["NOT_OE"] = 1
+time.sleep(4)
+bus["A0"] = 1
+time.sleep(4)
+bus["NOT_OE"] = 0
+time.sleep(4)
+bus["NOT_OE"] = 1
 
 # create function to set address or data bus using a single hex value
