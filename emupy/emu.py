@@ -1,7 +1,27 @@
 '''
+
+--------------=====Resource Library=====-----------------
+
 Created on 10 Aug 2014
 
 @author: BCollier
+
+There is some legacy code in here currently from initial 
+experiments. However, this module should eventually contain 
+a library of shared functions.
+
+Initial list follows
+
+rotate_right_8()    rotate an eight-bit number right
+rotate_left_8()     rotate an eight-bit number left
+not_8()             logical not on an 8-bit number
+and_8()             logical and on an 8-bit number
+or_8()              logical or on an 8-bit number
+xor_8()             logical xor on an 8-bit number
+nand_8()            logical nand on an 8-bit number
+
+---------------------------------------------------------
+
 '''
 
 import time
