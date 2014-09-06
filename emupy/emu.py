@@ -23,6 +23,21 @@ nand_8()            logical nand on an 8-bit number
 
 '''
 
+from emupy.components import bus_unit
+
+def setaddressbus(value):
+    m = 0
+    for n in bin(value)[2:]:
+        bus_unit.bus['A' + str(m)] = n
+
+def setdatabus(value):
+    m=0
+    for n in reversed(bin(value)[2:]):
+        bus_unit.bus['D' + str(m)] = n
+        print "Data bus pin " + str(m) + " set to " + str(n)
+        m = m + 1
+    #Then fill remains with blanks
+
 def decodebus(o1,o2,o3,o4,o5,o6,o7,o8):
     return   int(o1) + \
             int(2*o2) + \
@@ -37,3 +52,15 @@ def decodebus(o1,o2,o3,o4,o5,o6,o7,o8):
             #int(1024*bus[self.a10]) + \
             #int(2048*bus[self.a11]) + \
             #int(4096*bus[self.a12])
+            
+def clockdown():
+    bus_unit.bus['CLK'] = 0
+    print "Clock down. Clock is now " + str(bus_unit.bus['CLK'])
+
+def clockup():
+    bus_unit.bus['CLK'] = 1
+    print "Clock up. Clock is now " + str(bus_unit.bus['CLK'])
+    
+def clocktoggle():
+    bus_unit.bus['CLK'] = not(bus_unit.bus['CLK'])
+    print "Clock toggled. Clock is now " + str(bus_unit.bus['CLK'])

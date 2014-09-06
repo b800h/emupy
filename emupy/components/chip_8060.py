@@ -137,20 +137,41 @@ class chip_8060(threading.Thread):
                              0x01: [],
                              0x02: [],
                              0x08: [3, 11, self.instr_nop], # and so on...
+                             
+                             
                              0xc0: [3, 11, self.instr_ld], # 3 Cycles, 11 Microcycles, Function "instr_Ld"
+                             0xc1: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
+                             0xc2: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
+                             0xc3: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
+                             0xc4: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
+                             0xc5: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
+                             0xc6: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
+                             0xc7: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
                              0xc8: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
+                             0xc9: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
+                             0xca: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
+                             0xcb: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
+                             0xcc: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
+                             0xcd: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
+                             0xce: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
+                             0xcf: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
+                             
                              }
         
     def run(self):
         from emupy.components.bus_unit import bus
         from emupy.emu import decodebus
         print "Starting " + self.name
+        print "Waiting for first clock pulse..."
         self.wait_cycle(1)
-        instruction = decodebus(bus[self.ad0],bus[self.ad1],bus[self.ad2],bus[self.ad3],bus[self.ad4],bus[self.ad5],bus[self.ad6],bus[self.ad7])
+        instruction = decodebus(int(bus[self.db0]),int(bus[self.db1]),int(bus[self.db2]),int(bus[self.db3]),int(bus[self.db4]),int(bus[self.db5]),int(bus[self.db6]),int(bus[self.db7]))
+        print "Instruction on bus: " + str(instruction)
+        self.wait_cycle(self.instructions[instruction][0])
+        self.instructions[instruction][2]()
         # Then wait given number of cycles from self.instructions[instruction][0] before executing self.instructions[instruction][3] - function in dictionary
     
     def instr_nop(self):
-        pass
+        print ("NOP")
     
     def instr_ld(self):
         pass
@@ -159,7 +180,11 @@ class chip_8060(threading.Thread):
         pass
     
     def wait_cycle(self, cycles):
+        from emupy.components.bus_unit import bus
         for n in range(0,cycles):
-            while self.xin == self.current_xin:
+            while bus[self.xin] == self.current_xin:
                 pass
-            self.current_xin = self.xin
+            self.current_xin = bus[self.xin]
+            #while bus[self.xin == self.current_xin]:
+            #    pass
+            #self.current_xin = self.xin
