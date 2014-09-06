@@ -133,8 +133,12 @@ class chip_ins8060(threading.Thread):
         # Instruction dictionary
         
         self.instructions = {
-                             'LD': [3, 11,self.instr_ld], # 3 Cycles, 11 Microcycles, Function "instr_Ld"
-                             'ST': [3, 11,self.instr_st], # 3 Cycles, 11 Microcycles, Function "instr_st"
+                             0x00: [],
+                             0x01: [],
+                             0x02: [],
+                             0x08: [3, 11, self.instr_nop], # and so on...
+                             0xc0: [3, 11, self.instr_ld], # 3 Cycles, 11 Microcycles, Function "instr_Ld"
+                             0xc8: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
                              }
         
     def run(self):
