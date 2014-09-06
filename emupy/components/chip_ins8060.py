@@ -65,3 +65,88 @@ cas     00000111     6     S := AC (not SA or SB)
 nop     00001000     5     no operation
 
 '''
+
+import threading
+
+class chip_ins8060(threading.Thread):
+    def __init__(self, threadID, name, 
+                 nwds, nrds, nenin, nenout, nbreq, nhold, nrst, cont,
+                 db7, db6, db5, db4, db3, db2, db1, db0,
+                 sense_a, sense_b, flag_0, gnd, vcc, nads, xout, xin,
+                 ad11, ad10, ad9, ad8, ad7, ad6, ad5, ad4, ad3, ad2, ad1, ad0,
+                 sin, sout, flag_2, flag_1):
+        threading.Thread.__init__(self)
+        self.threadID = threadID
+        self.name = name
+        print "Initialising " + self.name
+        self.db0 = db0
+        self.db1 = db1
+        self.db2 = db2
+        self.db3 = db3
+        self.db4 = db4
+        self.db5 = db5
+        self.db6 = db6
+        self.db7 = db7
+        self.ad0 = ad0
+        self.ad1 = ad1
+        self.ad2 = ad2
+        self.ad3 = ad3
+        self.ad4 = ad4
+        self.ad5 = ad5
+        self.ad6 = ad6
+        self.ad7 = ad7
+        self.ad8 = ad8
+        self.ad9 = ad9
+        self.ad10 = ad10
+        self.ad11 = ad11
+        self.nwds = nwds
+        self.nrds = nrds
+        self.nenin = nenin 
+        self.nenout = nenout 
+        self.nbreq = nbreq
+        self.nhold = nhold
+        self.nrst = nrst
+        self.cont = cont
+        self.sense_a = sense_a
+        self.sense_b = sense_b
+        self.flag_0 = flag_0
+        self.nads = nads
+        self.xout = xout
+        self.xin = xin # Clock in
+        self.sin = sin # Clock out
+        self.sout = sout
+        self.flag_2 = flag_2
+        self.flag_1 = flag_1
+        self.pc = 0x00 # Program Counter (16-bit)
+        self.p0 = 0x00 # Pointer Register 0 (16-bit)  
+        self.p1 = 0x00 # Pointer Register 1 (16-bit)
+        self.p2 = 0x00 # Pointer Register 2 (16-bit)
+        self.p3 = 0x00 # Pointer Register 3 (16-bit)
+        self.ac = 0x00 # Accumulator (8-bit)
+        self.er = 0x00 # Extension Register (Bits?)
+        self.sr = 0x00 # Status Register (Bits?)
+        self.ir = 0x00 # Instruction Register (8-bit)
+        self.ior = 0x00 # IO Register (8-Bits?)
+        self.ar = 0x00 # Address Register (16-bit)
+        self.current_xin = 0
+        
+        # Instruction dictionary
+        
+        self.instructions = {
+                             'LD': [3, 11,self.instr_ld], # 3 Cycles, 11 Microcycles, Function "instr_Ld"
+                             'ST': [3, 11,self.instr_st], # 3 Cycles, 11 Microcycles, Function "instr_st"
+                             }
+        
+    def run(self):
+        from emupy.components.bus_unit import bus
+        from emupy.emu import decodebus
+        print "Starting " + self.name
+        self.wait_cycle(1)
+        instruction = decodebus(bus[self.ad0],bus[self.ad1],bus[self.ad2],bus[self.ad3],bus[self.ad4],bus[self.ad5],bus[self.ad6],bus[self.ad7])
+        # Then wait given number of cycles from self.instructions[instruction][0] before executing self.instructions[instruction][3] - function in dictionary
+    
+    def wait_cycle(self, cycles):
+        for n in range(0,cycles):
+            while self.xin == self.current_xin:
+                pass
+            self.current_xin = self.xin
