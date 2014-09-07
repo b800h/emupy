@@ -41,6 +41,14 @@ def getaddressbus():
         total = total + int(int(bus_unit.bus['A' + str(n)]) * m)
         m = m * 2
     return total
+
+def getdatabus():
+    m = 1
+    total = 0
+    for n in range(0,8):
+        total = total + int(int(bus_unit.bus['D' + str(n)]) * m)
+        m = m * 2
+    return total
          
 def setdatabus(value):
     m=0

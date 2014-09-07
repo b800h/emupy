@@ -25,9 +25,11 @@ cpu = chip_8060.chip_8060(1, "CPU",
 
 cpu.start()
 emupy.emu.setdatabus(0x08)
-while 1:
-    time.sleep(0.01)
-    emupy.emu.clockup()
-    time.sleep(0.01)
-    emupy.emu.clockdown()
-    print emupy.emu.getaddressbus()
+time.sleep(2)
+emupy.emu.clockup()
+time.sleep(2)
+emupy.emu.clockdown()
+time.sleep(2)
+emupy.emu.clockup()
+time.sleep(2)
+emupy.emu.clockdown()

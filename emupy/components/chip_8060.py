@@ -67,7 +67,7 @@ nop     00001000     5     no operation
 '''
 
 import threading
-from emupy.emu import setaddressbus
+from emupy.emu import setaddressbus, setdatabus, getaddressbus, getdatabus
 
 class chip_8060(threading.Thread):
     def __init__(self, threadID, name, 
@@ -134,28 +134,29 @@ class chip_8060(threading.Thread):
         # Instruction dictionary
         
         self.instructions = {
-                             0x00: [],
-                             0x01: [],
-                             0x02: [],
-                             0x08: [3, 11, self.instr_nop], # and so on...
+                             0x00: [1],
+                             0x01: [1],
+                             0x02: [1],
+                             0x08: [0, 3, 11, self.instr_nop], # and so on...
                              
+                             0x9c: [1, 3, 9, self.instr_jnz], # 2 bytes input, 3 cycles
                              
-                             0xc0: [3, 11, self.instr_ld], # 3 Cycles, 11 Microcycles, Function "instr_Ld"
-                             0xc1: [3, 9, self.instr_st],
-                             0xc2: [3, 9, self.instr_st],
-                             0xc3: [3, 9, self.instr_st],
-                             0xc4: [3, 9, self.instr_st],
-                             0xc5: [3, 9, self.instr_st],
-                             0xc6: [3, 9, self.instr_st],
-                             0xc7: [3, 9, self.instr_st],
-                             0xc8: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
-                             0xc9: [3, 9, self.instr_st],
-                             0xca: [3, 9, self.instr_st],
-                             0xcb: [3, 9, self.instr_st],
-                             0xcc: [3, 9, self.instr_st],
-                             0xcd: [3, 9, self.instr_st],
-                             0xce: [3, 9, self.instr_st],
-                             0xcf: [3, 9, self.instr_st],
+                             0xc0: [1, 3, 11, self.instr_ld], # 3 Cycles, 11 Microcycles, Function "instr_Ld"
+                             0xc1: [1, 3, 9, self.instr_st],
+                             0xc2: [1, 3, 9, self.instr_st],
+                             0xc3: [1, 3, 9, self.instr_st],
+                             0xc4: [1, 3, 9, self.instr_st],
+                             0xc5: [1, 3, 9, self.instr_st],
+                             0xc6: [1, 3, 9, self.instr_st],
+                             0xc7: [1, 3, 9, self.instr_st],
+                             0xc8: [1, 3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
+                             0xc9: [1 ,3, 9, self.instr_st],
+                             0xca: [1 ,3, 9, self.instr_st],
+                             0xcb: [1 ,3, 9, self.instr_st],
+                             0xcc: [1, 3, 9, self.instr_st],
+                             0xcd: [1, 3, 9, self.instr_st],
+                             0xce: [1, 3, 9, self.instr_st],
+                             0xcf: [1, 3, 9, self.instr_st],
                              
                              }        
     
@@ -166,19 +167,83 @@ class chip_8060(threading.Thread):
         print "Waiting for first clock pulse..."
         self.wait_cycle(1)
         while True:
-            instruction = decodebus(int(bus[self.db0]),int(bus[self.db1]),int(bus[self.db2]),int(bus[self.db3]),int(bus[self.db4]),int(bus[self.db5]),int(bus[self.db6]),int(bus[self.db7]))
-            #print "Instruction on bus: " + str(instruction)
-            self.wait_cycle(self.instructions[instruction][0])
-            self.instructions[instruction][2]()
+            
+            # Get next instruction
+            instruction = getdatabus()
+
+            # Increment Program Counter
+            
+            self.pc = self.pc + 1
+            if self.pc == 4096:
+                self.pc = 0
             setaddressbus(self.pc)
-            # set address bus to value in program counter.
+                
+            # Wait for Clock to Cycle
+                
+            self.wait_cycle(2)
     
+            # Is this a single byte instruction?
+            
+            if self.instructions[instruction][0] == 1:
+                
+                # Get byte 1
+                
+                byte1 = getdatabus()
+                
+                # Increment Program Counter
+            
+                self.pc = self.pc + 1
+                if self.pc == 4096:
+                    self.pc = 0
+                setaddressbus(self.pc)
+                    
+                # Wait for Clock to Cycle
+                    
+                self.wait_cycle(2)
+            
+            # Is this a double byte instruction?
+            
+            if self.instructions[instruction][0] == 2:
+
+                # Get byte 1
+                
+                byte1 = getdatabus()
+                
+                # Increment Program Counter
+            
+                self.pc = self.pc + 1
+                if self.pc == 4096:
+                    self.pc = 0
+                setaddressbus(self.pc)
+                    
+                # Wait for Clock to Cycle
+                    
+                self.wait_cycle(2)
+                
+                # Get byte 2
+                
+                byte2 = getdatabus()
+                
+                # Increment Program Counter
+            
+                self.pc = self.pc + 1
+                if self.pc == 4096:
+                    self.pc = 0
+                setaddressbus(self.pc)
+                    
+                # Wait for Clock to Cycle
+                    
+                self.wait_cycle(2)
+            
     def instr_nop(self):
         #print ("NOP")
         # Or self.pc.inc if we create these registers as their own type
-        self.pc = self.pc + 1
-        if self.pc == 4096:
-            self.pc = 0
+        pass
+    
+    def instr_jnz(self, byte1, byte2):
+        input_dbyte = byte1 + byte2
+        if self.ac == 0:
+            self.pc = input_dbyte
     
     def instr_ld(self):
         pass
