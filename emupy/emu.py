@@ -33,6 +33,10 @@ def setaddressbus(value):
         print "Address bus pin " + str(m) + " set to " + str(n)
         m = m + 1
     #Then fill remains with blanks
+    print bin(value)[2:]
+    while m < 8:
+        bus_unit.bus['A' + str(m)] = 0
+        m = m + 1
         
 def getaddressbus():
     m = 1

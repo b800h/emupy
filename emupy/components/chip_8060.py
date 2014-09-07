@@ -165,7 +165,7 @@ class chip_8060(threading.Thread):
         from emupy.emu import decodebus
         print "Starting " + self.name
         print "Waiting for first clock pulse..."
-        self.wait_cycle(1)
+        #self.wait_cycle(1)
         
         while True:
             byte1 = None
@@ -193,6 +193,7 @@ class chip_8060(threading.Thread):
                 setaddressbus(self.pc)
                 self.wait_cycle(2) # Wait for Clock to Cycle
             
+            print "Executing instruction " + hex(instruction)
             self.instructions[instruction][3](byte1,byte2)
             
     def instr_nop(self, byte1, byte2):
@@ -204,6 +205,8 @@ class chip_8060(threading.Thread):
         input_dbyte = byte1 + byte2
         if self.ac == 0:
             self.pc = input_dbyte
+            print "Jumping to " + hex(input_dbyte)
+            setaddressbus(self.pc)
     
     def instr_ld(self):
         pass

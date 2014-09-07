@@ -40,21 +40,21 @@ memchip1 = chip_7164.chip_7164(1, "64Kb RAM", 2, 'A0', 'A1', 'A2', 'A3', 'A4', '
 cpu.start()
 while 1:
     emupy.emu.setdatabus(0x9c)
-    time.sleep(0.01)
+    time.sleep(0.5)
     emupy.emu.clockup()
-    time.sleep(0.01)
+    time.sleep(0.5)
     emupy.emu.clockdown()
     
     emupy.emu.setdatabus(0x00)
-    time.sleep(0.01)
+    time.sleep(0.5)
     emupy.emu.clockup()
-    time.sleep(0.01)
+    time.sleep(0.5)
     emupy.emu.clockdown()
     
     emupy.emu.setdatabus(0x00)
-    time.sleep(0.01)
+    time.sleep(0.5)
     emupy.emu.clockup()
-    time.sleep(0.01)
+    time.sleep(0.5)
     emupy.emu.clockdown()
     
     print "Address: " + hex(emupy.emu.getaddressbus())
