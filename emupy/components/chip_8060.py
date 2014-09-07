@@ -133,13 +133,13 @@ class chip_8060(threading.Thread):
         
         # Instruction dictionary
         
-        self.instructions = {
+        self.instructions = {# Opcode key, input byes, cycles, microcycles, opcode function, strobe_write, strobe_read
                              0x00: [1],
                              0x01: [1],
                              0x02: [1],
-                             0x08: [0, 3, 11, self.instr_nop], # and so on...
+                             0x08: [0, 3, 11, self.instr_nop, False], # and so on...
                              
-                             0x9c: [1, 3, 9, self.instr_jnz], # 2 bytes input, 3 cycles
+                             0x9c: [2, 3, 9, self.instr_jz, False], # 2 bytes input, 3 cycles
                              
                              0xc0: [1, 3, 11, self.instr_ld], # 3 Cycles, 11 Microcycles, Function "instr_Ld"
                              0xc1: [1, 3, 9, self.instr_st],
@@ -166,81 +166,41 @@ class chip_8060(threading.Thread):
         print "Starting " + self.name
         print "Waiting for first clock pulse..."
         self.wait_cycle(1)
+        
         while True:
-            
-            # Get next instruction
-            instruction = getdatabus()
-
-            # Increment Program Counter
-            
-            self.pc = self.pc + 1
+            byte1 = None
+            byte2 = None # Reset operands
+            self.strobe_read() # Strobe Read Line (Takes 2 Cycles)
+            instruction = getdatabus() # Get next instruction
+            self.pc = self.pc + 1 # Increment Program Counter
             if self.pc == 4096:
                 self.pc = 0
             setaddressbus(self.pc)
-                
-            # Wait for Clock to Cycle
-                
-            self.wait_cycle(2)
-    
-            # Is this a single byte instruction?
             
-            if self.instructions[instruction][0] == 1:
-                
-                # Get byte 1
-                
-                byte1 = getdatabus()
-                
-                # Increment Program Counter
-            
-                self.pc = self.pc + 1
+            if self.instructions[instruction][0] >= 1: # Is this a single byte instruction?
+                byte1 = getdatabus() # Get byte 1
+                self.pc = self.pc + 1 # Increment Program Counter
                 if self.pc == 4096:
                     self.pc = 0
                 setaddressbus(self.pc)
-                    
-                # Wait for Clock to Cycle
-                    
-                self.wait_cycle(2)
+                self.wait_cycle(2) # Wait for clock to cycle
             
-            # Is this a double byte instruction?
-            
-            if self.instructions[instruction][0] == 2:
-
-                # Get byte 1
-                
-                byte1 = getdatabus()
-                
-                # Increment Program Counter
-            
-                self.pc = self.pc + 1
+            if self.instructions[instruction][0] == 2: # Is this a double byte instruction?
+                byte2 = getdatabus() # Get byte 2
+                self.pc = self.pc + 1 # Increment Program Counter
                 if self.pc == 4096:
                     self.pc = 0
                 setaddressbus(self.pc)
-                    
-                # Wait for Clock to Cycle
-                    
-                self.wait_cycle(2)
-                
-                # Get byte 2
-                
-                byte2 = getdatabus()
-                
-                # Increment Program Counter
+                self.wait_cycle(2) # Wait for Clock to Cycle
             
-                self.pc = self.pc + 1
-                if self.pc == 4096:
-                    self.pc = 0
-                setaddressbus(self.pc)
-                    
-                # Wait for Clock to Cycle
-                    
-                self.wait_cycle(2)
+            self.instructions[instruction][3](byte1,byte2)
             
-    def instr_nop(self):
+    def instr_nop(self, byte1, byte2):
         #print ("NOP")
         # Or self.pc.inc if we create these registers as their own type
         pass
     
-    def instr_jnz(self, byte1, byte2):
+    def instr_jz(self, byte1, byte2):
         input_dbyte = byte1 + byte2
         if self.ac == 0:
             self.pc = input_dbyte
@@ -250,6 +210,17 @@ class chip_8060(threading.Thread):
     
     def instr_st(self):
         pass
+    
+    def strobe_read(self):
+        from emupy.components.bus_unit import bus
+        while bus[self.xin] == self.current_xin:
+            pass
+        self.current_xin = bus[self.xin]
+        self.nrds = 0
+        while bus[self.xin] == self.current_xin:
+            pass
+        self.current_xin = bus[self.xin]
+        self.nrds = 1
     
     def wait_cycle(self, cycles):
         from emupy.components.bus_unit import bus
