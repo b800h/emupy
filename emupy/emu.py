@@ -26,10 +26,22 @@ nand_8()            logical nand on an 8-bit number
 from emupy.components import bus_unit
 
 def setaddressbus(value):
-    m = 0
-    for n in bin(value)[2:]:
+    m=0
+    #print str(bin(value))
+    for n in reversed(bin(value)[2:]):
         bus_unit.bus['A' + str(m)] = n
-
+        print "Address bus pin " + str(m) + " set to " + str(n)
+        m = m + 1
+    #Then fill remains with blanks
+        
+def getaddressbus():
+    m = 1
+    total = 0
+    for n in range(0,12):
+        total = total + int(int(bus_unit.bus['A' + str(n)]) * m)
+        m = m * 2
+    return total
+         
 def setdatabus(value):
     m=0
     for n in reversed(bin(value)[2:]):
@@ -55,12 +67,12 @@ def decodebus(o1,o2,o3,o4,o5,o6,o7,o8):
             
 def clockdown():
     bus_unit.bus['CLK'] = 0
-    print "Clock down. Clock is now " + str(bus_unit.bus['CLK'])
+    #print "Clock down. Clock is now " + str(bus_unit.bus['CLK'])
 
 def clockup():
     bus_unit.bus['CLK'] = 1
-    print "Clock up. Clock is now " + str(bus_unit.bus['CLK'])
+    #print "Clock up. Clock is now " + str(bus_unit.bus['CLK'])
     
 def clocktoggle():
     bus_unit.bus['CLK'] = not(bus_unit.bus['CLK'])
-    print "Clock toggled. Clock is now " + str(bus_unit.bus['CLK'])
+    #print "Clock toggled. Clock is now " + str(bus_unit.bus['CLK'])

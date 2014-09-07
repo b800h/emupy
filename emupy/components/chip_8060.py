@@ -67,6 +67,7 @@ nop     00001000     5     no operation
 '''
 
 import threading
+from emupy.emu import setaddressbus
 
 class chip_8060(threading.Thread):
     def __init__(self, threadID, name, 
@@ -140,38 +141,44 @@ class chip_8060(threading.Thread):
                              
                              
                              0xc0: [3, 11, self.instr_ld], # 3 Cycles, 11 Microcycles, Function "instr_Ld"
-                             0xc1: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
-                             0xc2: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
-                             0xc3: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
-                             0xc4: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
-                             0xc5: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
-                             0xc6: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
-                             0xc7: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
+                             0xc1: [3, 9, self.instr_st],
+                             0xc2: [3, 9, self.instr_st],
+                             0xc3: [3, 9, self.instr_st],
+                             0xc4: [3, 9, self.instr_st],
+                             0xc5: [3, 9, self.instr_st],
+                             0xc6: [3, 9, self.instr_st],
+                             0xc7: [3, 9, self.instr_st],
                              0xc8: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
-                             0xc9: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
-                             0xca: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
-                             0xcb: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
-                             0xcc: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
-                             0xcd: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
-                             0xce: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
-                             0xcf: [3, 9, self.instr_st], # 3 Cycles, 9 Microcycles, Function "instr_st"
+                             0xc9: [3, 9, self.instr_st],
+                             0xca: [3, 9, self.instr_st],
+                             0xcb: [3, 9, self.instr_st],
+                             0xcc: [3, 9, self.instr_st],
+                             0xcd: [3, 9, self.instr_st],
+                             0xce: [3, 9, self.instr_st],
+                             0xcf: [3, 9, self.instr_st],
                              
-                             }
-        
+                             }        
+    
     def run(self):
         from emupy.components.bus_unit import bus
         from emupy.emu import decodebus
         print "Starting " + self.name
         print "Waiting for first clock pulse..."
         self.wait_cycle(1)
-        instruction = decodebus(int(bus[self.db0]),int(bus[self.db1]),int(bus[self.db2]),int(bus[self.db3]),int(bus[self.db4]),int(bus[self.db5]),int(bus[self.db6]),int(bus[self.db7]))
-        print "Instruction on bus: " + str(instruction)
-        self.wait_cycle(self.instructions[instruction][0])
-        self.instructions[instruction][2]()
-        # Then wait given number of cycles from self.instructions[instruction][0] before executing self.instructions[instruction][3] - function in dictionary
+        while True:
+            instruction = decodebus(int(bus[self.db0]),int(bus[self.db1]),int(bus[self.db2]),int(bus[self.db3]),int(bus[self.db4]),int(bus[self.db5]),int(bus[self.db6]),int(bus[self.db7]))
+            #print "Instruction on bus: " + str(instruction)
+            self.wait_cycle(self.instructions[instruction][0])
+            self.instructions[instruction][2]()
+            setaddressbus(self.pc)
+            # set address bus to value in program counter.
     
     def instr_nop(self):
-        print ("NOP")
+        #print ("NOP")
+        # Or self.pc.inc if we create these registers as their own type
+        self.pc = self.pc + 1
+        if self.pc == 4096:
+            self.pc = 0
     
     def instr_ld(self):
         pass
