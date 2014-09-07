@@ -11,6 +11,7 @@ Created on 11 Aug 2014
 '''
 
 import threading
+from emupy.emu import setaddressbus, setdatabus, getaddressbus, getdatabus
 
 class chip_7164(threading.Thread):
     
@@ -67,35 +68,13 @@ class chip_7164(threading.Thread):
             print self.name + " running"
             if bus[self.not_oe] == 0 and self.current_not_oe == 1:
                 self.current_not_oe = 0
-                address =   int(bus[self.a0]) + \
-                            int(2*bus[self.a1]) + \
-                            int(4*bus[self.a2]) + \
-                            int(8*bus[self.a3]) + \
-                            int(16*bus[self.a4]) + \
-                            int(32*bus[self.a5]) + \
-                            int(64*bus[self.a6]) + \
-                            int(128*bus[self.a7]) + \
-                            int(256*bus[self.a8]) + \
-                            int(512*bus[self.a9]) + \
-                            int(1024*bus[self.a10]) + \
-                            int(2048*bus[self.a11]) + \
-                            int(4096*bus[self.a12])
+                address = getaddressbus()
+                setdatabus(self.memory[address]) 
                 print "Memory read at address " + hex(address)
             if bus[self.not_we] == 0 and self.current_not_we == 1:
                 self.current_not_we = 0
-                address =   int(bus[self.a0]) + \
-                            int(2*bus[self.a1]) + \
-                            int(4*bus[self.a2]) + \
-                            int(8*bus[self.a3]) + \
-                            int(16*bus[self.a4]) + \
-                            int(32*bus[self.a5]) + \
-                            int(64*bus[self.a6]) + \
-                            int(128*bus[self.a7]) + \
-                            int(256*bus[self.a8]) + \
-                            int(512*bus[self.a9]) + \
-                            int(1024*bus[self.a10]) + \
-                            int(2048*bus[self.a11]) + \
-                            int(4096*bus[self.a12])
+                address = getaddressbus()
+                self.memory[address] = getdatabus()
                 print "Memory write at address " + hex(address)
             if bus[self.not_oe] == 1 and self.current_not_oe == 0:
                 self.current_not_oe = 1

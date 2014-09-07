@@ -57,6 +57,10 @@ def setdatabus(value):
         print "Data bus pin " + str(m) + " set to " + str(n)
         m = m + 1
     #Then fill remains with blanks
+    print bin(value)[2:]
+    while m < 8:
+        bus_unit.bus['D' + str(m)] = 0
+        m = m + 1
 
 def decodebus(o1,o2,o3,o4,o5,o6,o7,o8):
     return   int(o1) + \
